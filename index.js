@@ -109,9 +109,9 @@ class EdgeWalker {
   move(xOff, yOff) {
     // check OOB / hit wall
     if (this.x + xOff < 0) return false;
-    if (this.x + xOff > this.W) return false;
+    if (this.x + xOff > this.W-1) return false;
     if (this.y + yOff < 0) return false;
-    if (this.y + yOff > this.H) return false;
+    if (this.y + yOff > this.H-1) return false;
 
     let newX = this.x + xOff;
     let newY = this.y + yOff;
