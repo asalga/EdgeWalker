@@ -43,7 +43,7 @@ class EdgeWalkerC {
         let g = this.img.pixels[idx + 1];
         let b = this.img.pixels[idx + 2];
         let a = this.img.pixels[idx + 3];
-				
+
         this.grid[x][y] = {
           visited: false,
           col: [r, g, b, a]
@@ -55,7 +55,7 @@ class EdgeWalkerC {
 
     this.x = this.curr.x;
     this.y = this.curr.y;
-		this.c = this.curr.c;
+    this.c = this.curr.c;
 
     this.visitCurr();
 
@@ -68,10 +68,10 @@ class EdgeWalkerC {
 
     for (let i = 0; !finished; i++) {
 
-			let success = this.move(-1, 0);					 // left
-      if (!success) success = this.move(0,-1); // up
-			if (!success) success = this.move(1,0);	 // right
-			if (!success) success = this.move(0,1);	 // down
+      let success = this.move(-1, 0); // left
+      if (!success) success = this.move(0, -1); // up
+      if (!success) success = this.move(1, 0); // right
+      if (!success) success = this.move(0, 1); // down
 
       if (this.x === this.start.x && this.y === this.start.y) {
         finished = true;
@@ -99,23 +99,23 @@ class EdgeWalkerC {
 
     return arr;
   }
-	
-	move(xOff, yOff){
-		// check OOB / hit wall
-		if(this.x + xOff < 0) return false;
-		if(this.x + xOff > this.W) return false;
-		if(this.y + yOff < 0) return false;
-		if(this.y + yOff > this.H) return false;
-		
-		let newX = this.x + xOff;
-		let newY = this.y + yOff;
-		
+
+  move(xOff, yOff) {
+    // check OOB / hit wall
+    if (this.x + xOff < 0) return false;
+    if (this.x + xOff > this.W) return false;
+    if (this.y + yOff < 0) return false;
+    if (this.y + yOff > this.H) return false;
+
+    let newX = this.x + xOff;
+    let newY = this.y + yOff;
+
     let start = this.isStart(newX, newY);
 
     let cell = this.grid[newX][newY];
     if ((this.isEdgeColor(cell.col) && !cell.visited && this.touchesOutside(newX, newY)) || start) {
-			this.x = newX;
-			this.y = newY;
+      this.x = newX;
+      this.y = newY;
       this.visitCurr();
       return true;
     }
@@ -132,19 +132,19 @@ class EdgeWalkerC {
   }
 
   findLeftmost() {
-		let test = 0;
+    let test = 0;
     for (let x = 0; x < this.W; x++) {
       for (let y = 0; y < this.H; y++) {
-				test++;
+        test++;
         if (this.isEdgeColor(this.grid[x][y].col)) {
-					
-					// let c = [
-					// 	this.grid[x][y].col[0],
-					// 	this.grid[x][y].col[1],
-					// 	this.grid[x][y].col[2],
-					// 	this.grid[x][y].col[3]
-					// ]
-          return {x, y};
+
+          // let c = [
+          // 	this.grid[x][y].col[0],
+          // 	this.grid[x][y].col[1],
+          // 	this.grid[x][y].col[2],
+          // 	this.grid[x][y].col[3]
+          // ]
+          return { x, y };
         }
       }
     }
@@ -158,13 +158,13 @@ class EdgeWalkerC {
     if (x - 1 < 0 || x + 1 >= this.W || y - 1 < 0 || y + 1 >= this.H) return true;
 
     if (
-      !this.isEdgeColor(this.grid[x - 1][y].col)   	 ||
+      !this.isEdgeColor(this.grid[x - 1][y].col) ||
       !this.isEdgeColor(this.grid[x - 1][y - 1].col) ||
-      !this.isEdgeColor(this.grid[x][y - 1].col)   	 ||
+      !this.isEdgeColor(this.grid[x][y - 1].col) ||
       !this.isEdgeColor(this.grid[x + 1][y - 1].col) ||
-      !this.isEdgeColor(this.grid[x + 1][y].col)   	 ||
+      !this.isEdgeColor(this.grid[x + 1][y].col) ||
       !this.isEdgeColor(this.grid[x + 1][y + 1].col) ||
-      !this.isEdgeColor(this.grid[x][y + 1].col)     ||
+      !this.isEdgeColor(this.grid[x][y + 1].col) ||
       !this.isEdgeColor(this.grid[x - 1][y + 1].col)) {
       return true;
     }
