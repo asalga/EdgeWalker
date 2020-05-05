@@ -9,15 +9,21 @@
     - transparent pixels define the outside of the hull
 
   Usage:
+  	// defaults to find anything that isn't transparent.
     let edgeWalker = new EdgeWalker(img);
     let arr = edgeWalker.getEdgePoints();
+
+	// or provide a color to look for
+    let edgeWalker = new EdgeWalker(img, {edgeColor: [255,0,0]});
+    let arr = edgeWalker.getEdgePoints();
 	
-	TODO: fix issue with walking life eyebrow bug
+  TODO: fix issue with walking life eyebrow bug
 */
 
-class EdgeWalkerC {
+class EdgeWalker {
 
   constructor(img, obj) {
+
     if (obj) {
       this.edgeColor = obj.edgeColor;
     }
@@ -172,12 +178,14 @@ class EdgeWalkerC {
   }
 
   isEdgeColor(c) {
-    return c[0] === this.edgeColor[0] &&
-      c[1] === this.edgeColor[1] &&
-      c[2] === this.edgeColor[2] &&
-      c[3] === this.edgeColor[3];
+
+    if (this.edgeColor) {
+      return c[0] === this.edgeColor[0] &&
+        c[1] === this.edgeColor[1] &&
+        c[2] === this.edgeColor[2] &&
+        c[3] === this.edgeColor[3];
+    } else {
+      return c[3] !== 0;
+    }
   }
-  // isEdgeColor(c) {
-  //   return c[3] !== 0;
-  // }
 }
