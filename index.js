@@ -9,15 +9,17 @@
     - transparent pixels define the outside of the hull
 
   Usage:
-  	// defaults to find anything that isn't transparent.
+// defaults to find anything that isn't transparent.
     let edgeWalker = new EdgeWalker(img);
     let arr = edgeWalker.getEdgePoints();
 
-	// or provide a color to look for
+// or provide a color to look for
     let edgeWalker = new EdgeWalker(img, {edgeColor: [255,0,0]});
     let arr = edgeWalker.getEdgePoints();
-	
-  TODO: fix issue with walking life eyebrow bug
+
+  TODO:
+- fix issue with walking life eyebrow bug
+- add optional distance calculation
 */
 
 class EdgeWalker {
@@ -25,7 +27,11 @@ class EdgeWalker {
   constructor(img, obj) {
 
     if (obj) {
-      this.edgeColor = obj.edgeColor;
+      if (obj.edgeColor.length === 3) {
+        this.edgeColor = [...obj.edgeColor, 255];
+      } else if (obj.edgeColor.length === 4) {
+        this.edgeColor = obj.edgeColor;
+      }
     }
 
     this.img = img;
@@ -109,9 +115,9 @@ class EdgeWalker {
   move(xOff, yOff) {
     // check OOB / hit wall
     if (this.x + xOff < 0) return false;
-    if (this.x + xOff > this.W-1) return false;
+    if (this.x + xOff > this.W - 1) return false;
     if (this.y + yOff < 0) return false;
-    if (this.y + yOff > this.H-1) return false;
+    if (this.y + yOff > this.H - 1) return false;
 
     let newX = this.x + xOff;
     let newY = this.y + yOff;
@@ -120,6 +126,7 @@ class EdgeWalker {
 
     let cell = this.grid[newX][newY];
     if ((this.isEdgeColor(cell.col) && !cell.visited && this.touchesOutside(newX, newY)) || start) {
+
       this.x = newX;
       this.y = newY;
       this.visitCurr();
@@ -145,19 +152,22 @@ class EdgeWalker {
         if (this.isEdgeColor(this.grid[x][y].col)) {
 
           // let c = [
-          // 	this.grid[x][y].col[0],
-          // 	this.grid[x][y].col[1],
-          // 	this.grid[x][y].col[2],
-          // 	this.grid[x][y].col[3]
+          // this.grid[x][y].col[0],
+          // this.grid[x][y].col[1],
+          // this.grid[x][y].col[2],
+          // this.grid[x][y].col[3]
           // ]
           return { x, y };
         }
       }
     }
+
+    console.log('error finding leftmore pixel');
+    return null;
   }
 
   // we need a way to prevent going 'inside' the shape.
-  // the marker should always have a transparent pixel relative to its 
+  // the marker should always have a transparent pixel relative to its
   // top-left, top, top-right, right, bottom-right etc.
   touchesOutside(x, y) {
 
@@ -178,7 +188,6 @@ class EdgeWalker {
   }
 
   isEdgeColor(c) {
-
     if (this.edgeColor) {
       return c[0] === this.edgeColor[0] &&
         c[1] === this.edgeColor[1] &&
