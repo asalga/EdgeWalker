@@ -9,17 +9,22 @@
     - transparent pixels define the outside of the hull
 
   Usage:
-// defaults to find anything that isn't transparent.
+	// defaults to find anything that isn't transparent.
     let edgeWalker = new EdgeWalker(img);
     let arr = edgeWalker.getEdgePoints();
 
-// or provide a color to look for
+	// or provide a color to look for
     let edgeWalker = new EdgeWalker(img, {edgeColor: [255,0,0]});
     let arr = edgeWalker.getEdgePoints();
 
+    eagerlyCloseShape - when sending in an image 
+    rendered in p5js, there will be aliasing making it difficult
+    to determine where the shape is closed. There's also a bug
+    that sends the next point much farther than it should be.
+
   TODO:
-- fix issue with walking life eyebrow bug
-- add optional distance calculation
+	- fix issue with walking life eyebrow bug
+	- add optional distance calculation
 */
 
 class EdgeWalker {
@@ -27,6 +32,8 @@ class EdgeWalker {
   constructor(img, obj) {
 
     if (obj) {
+      this.eagerlyCloseShape = obj.eagerlyCloseShape;
+
       if (obj.edgeColor.length === 3) {
         this.edgeColor = [...obj.edgeColor, 255];
       } else if (obj.edgeColor.length === 4) {
@@ -65,6 +72,7 @@ class EdgeWalker {
 
     this.curr = this.findLeftmost();
 
+
     this.x = this.curr.x;
     this.y = this.curr.y;
     this.c = this.curr.c;
@@ -85,8 +93,15 @@ class EdgeWalker {
       if (!success) success = this.move(1, 0); // right
       if (!success) success = this.move(0, 1); // down
 
-      if (this.x === this.start.x && this.y === this.start.y) {
-        finished = true;
+
+      if (this.eagerlyCloseShape) {
+        if (arr.length > 50 && dist(this.start.x, this.start.y, this.x, this.y) < 5) {
+          finished = true;
+        }
+      } else {
+        if (this.x === this.start.x && this.y === this.start.y) {
+          finished = true;
+        }
       }
 
       if (success) {
