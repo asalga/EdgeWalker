@@ -71,15 +71,21 @@ class EdgeWalker {
     }
 
     this.curr = this.findLeftmost();
+    this.valid = this.curr !== null;
 
+    if (this.valid) {
+      this.x = this.curr.x;
+      this.y = this.curr.y;
+      this.c = this.curr.c;
 
-    this.x = this.curr.x;
-    this.y = this.curr.y;
-    this.c = this.curr.c;
+      this.visitCurr();
 
-    this.visitCurr();
+      this.start = { x: this.curr.x, y: this.curr.y };
+    }
+  }
 
-    this.start = { x: this.curr.x, y: this.curr.y };
+  isValid() {
+    return this.valid;
   }
 
   getEdgePoints() {
